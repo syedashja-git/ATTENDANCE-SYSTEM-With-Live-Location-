@@ -1,0 +1,69 @@
+LATEST FIX: NEW ENTRIES NOT REACHING SHEETS
+
+Nayi attendance ab save hote hi Google Sheets sync attempt karegi. Cron temporary failures ki retry ke liye ab bhi rakhein.
+Owner dashboard mein Sync now button aur exact pending/error status add hai.
+
+Is update ke liye cPanel mein ye 3 files replace karein:
+website/attendance_sync.php
+website/attendance_api.php
+website/attendance.html (live filename attendance.html)
+
+Apni existing attendance_sync_config.php ko preserve karein. Agar token abhi PASTE_... placeholder hai to Apps Script > Project Settings > Script properties ka SYNC_TOKEN isi config mein set karein. Dono tokens bilkul same hon. Token chat mein share karna zaroori nahi.
+
+Page refresh (Ctrl+F5) > Owner access > login > Sync now.
+Is se pehle se pending old/new records bhi batch mein bheje jayenge. Dashboard pending count zero aur acknowledgement message verify karein, phir Sheet Attendance tab check karein.
+
+Possible status messages:
+Configure Apps Script URL and token first: config URL/token missing or placeholder.
+SYNC_TOKEN does not match: PHP token aur Apps Script token different.
+Hosting could not reach Google Apps Script: hosting outbound network/cURL/timeout issue.
+Apps Script did not return JSON: deployment access/URL check; Execute as Me, access Anyone, /exec URL.
+Apps Script could not write to the Sheet: SHEET_ID, Attendance tab, Google permissions aur Apps Script Executions log check karein.
+
+Sheets failure se attendance entry server par safe rehti hai. Employee ko dobara attendance mark karne ki zaroorat nahi. Owner ko exact pending status milta hai.
+
+Live check mein website API 23 records return kar rahi thi aur new IDs maujood the. Connected Google account ko Sheet par permission denied mila. Actual hosting config/cron aur Sheets write is environment se verify nahi hue. Live website ko yahan se update nahi kiya gaya.
+
+UPDATE: DELETE BUTTON + GOOGLE SHEETS DELETION
+
+Owner dashboard mein har row ke saamne Delete button hai. Confirmation mein employee, date aur time dikhte hain. Sirf logged-in owner delete kar sakta hai.
+
+Pehle se setup installed hai to:
+1. Apps Script mein google-apps-script/Code.gs ka updated code paste karke Save karein.
+2. Deploy > Manage deployments > Edit > New version > Deploy. Existing URL same rakhein.
+3. cPanel mein existing files ka backup lein; phir website/attendance_sync.php aur attendance_api.php replace karein.
+4. website/attendance.html ko live attendance.html ke naam se replace karein. Agar aap isi app ko index.html ke naam se chalate hain to us live filename ko use karein.
+5. attendance_sync_config.php mein aapka valid token pehle set hai to us file ko placeholder wali copy se replace NA karein. Existing config, attendance_seed.php, attendance_data.json, attendance_archive.php aur attendance_sync.lock ko preserve karein.
+6. Existing every-minute cron same rahega. Seed/config pehle installed na hon to neeche first-time setup follow karein.
+7. Ek TEST attendance add karein, sync karke Sheet mein check karein. Website se usi TEST row ko delete karein. Website aur Sheet dono se removal verify karein.
+
+Delete foran server JSON aur local sync archive se row hata deta hai; Google Sheets ko foran sync attempt karta hai. Network/config/deployment issue ho to UI clearly pending sync batata hai, aur cron retry karta hai. Google ki acknowledgement ke baghair UI dono jagah deletion ka claim nahi karta.
+
+Clear all data bhi confirmation ke baad website aur Sheets backup ki tamam tracked entries delete karega, including historical seed rows. Ye pehle version ke backup-preserving clear se different hai.
+
+Deleted entries ka content sync archive se remove hota hai. Sirf unke random/hash IDs private archive aur Sheet ke hidden _DeletedAttendanceIDs tab mein rehte hain, taa-ke late sync ya old import deleted row ko dobara na banaye. In deletion IDs ko manually na mitayein. Aapke alag downloaded backups aur Google revision history ko ye function purge nahi karta.
+
+Live website/Sheet is update se abhi modify nahi hue. Upload + Apps Script deployment + valid token + cron ke baad live verification required hai.
+
+FIRST-TIME SETUP (agar pehle wala setup install nahi hua):
+
+AAPKE LINKS CONFIGURED HAIN — LIVE SETUP ABHI BAQI HAI
+
+1. Usi Apps Script project ko apne Google account se kholein jahan provided /exec deployment banaya tha.
+2. Code.gs mein package ka google-apps-script/Code.gs poora paste karke Save karein.
+3. Function dropdown se connectExistingAndImport choose karein aur Run dabayein. Permissions authorize karein.
+   Is se aapke diye hue Google Sheet mein Attendance tab aur purani 21 entries aa jayengi. Repeat run same Sync IDs ko duplicate nahi karega.
+   Agar purane records kisi doosre tab mein pehle manually import hue hain, woh tab unchanged rahega; automated sync sirf Attendance tab use karta hai.
+4. Deploy > Manage deployments > pencil/Edit > Version: New version > Deploy.
+   Existing deployment update karein taa-ke diya hua /exec URL same rahe. Execute as Me, access Anyone required hai.
+5. Project Settings > Script properties se SYNC_TOKEN copy karein aur website/attendance_sync_config.php mein token placeholder replace karein. Token chat mein bhejna zaroori nahi.
+6. cPanel > File Manager mein existing attendance_api.php aur attendance_data.json ka backup download karein.
+   website folder ki 4 PHP files existing API wali directory mein upload karein. attendance_data.json delete/replace NA karein. Updated attendance.html bhi upload karein; sound/logo same rakhein.
+7. cPanel Cron Jobs mein har minute (* * * * *) PHP CLI command set karein:
+   /usr/local/bin/php /home/YOUR_CPANEL_USERNAME/public_html/attendance_sync.php
+   Hosting ka actual PHP path aur website directory use karein. Agar domain ka document root different hai to public_html wala path replace karein.
+8. Cron manually run karke, phir test attendance mark karke Sheet mein entry verify karein.
+
+Is package se automatically cPanel login ya deploy nahi hua. Google Sheet connector ne permission denied diya; import function aapke apne authorized Google account se run hona hai. SYNC_TOKEN abhi placeholder hai. Code/URL config ready hone ka matlab live sync verified hona nahi.
+
+Detailed behaviour aur backup instructions: SETUP_ROMAN_URDU.txt.

@@ -1,0 +1,67 @@
+ALPHA ATTENDANCE — GOOGLE SHEETS BACKUP
+
+Status: Integration files ready. Live hosting aur Google account par abhi install/deploy NAHI hua.
+Website ka existing design same hai; attendance table mein Action/Delete column add hai. success.mp3 unchanged hai. CSV ki tamam 21 entries bundled seed mein hain. Original dates/times ko change nahi kiya.
+
+1. PEHLE BACKUP
+Hosting File Manager mein attendance_api.php aur attendance_data.json download karke backup rakhein. attendance_data.json ko delete ya replace NA karein. Is package mein replacement attendance_data.json jaan-boojh kar nahi hai.
+
+2. GOOGLE SHEET BANAYEIN
+Apne Google account se https://script.google.com/ open karein > New project.
+Code.gs mein google-apps-script/Code.gs ka tamam code paste karein > Save.
+Function dropdown se setup choose karke Run karein. Google permissions authorize karein.
+Execution log mein nayi private Google Sheet ka link milega.
+Project Settings > Script properties mein SYNC_TOKEN milega; PHP configuration ke liye copy karein. Token kisi public page/chat mein share na karein.
+setup ko dobara run karne se doosri sheet nahi banti.
+
+3. WEB APP DEPLOY
+Deploy > New deployment > Web app.
+Execute as: Me. Who has access: Anyone. Deploy karein.
+/exec par khatam hone wala URL copy karein. Sheet khud private rahegi; write requests ko secret token chahiye.
+Agar organization Anyone option allow na kare, administrator ki madad chahiye; deployment ke baghair sync nahi chalega.
+Official guide: https://developers.google.com/apps-script/guides/web
+
+4. PHP CONFIG
+website/attendance_sync_config.php kholein.
+url mein /exec URL paste karein.
+token mein Script properties ka wahi SYNC_TOKEN paste karein.
+
+5. HOSTING PAR FILES
+In chaar files ko existing attendance_api.php wali directory mein upload karein:
+attendance_api.php (old file ka backup lene ke baad replace)
+attendance_sync.php
+attendance_sync_config.php
+attendance_seed.php
+Delete button ke liye updated attendance.html bhi live page par upload/replace karein. Logo aur success.mp3 unchanged rakhein.
+PHP 7.4+ with cURL, working HTTPS outbound access, aur directory write permission required hain.
+
+6. AUTOMATIC SYNC — CRON ZAROORI HAI
+Hosting control panel > Cron Jobs. Har minute (* * * * *) command chalayein:
+/usr/local/bin/php /home/YOUR_HOSTING_USER/public_html/attendance_sync.php
+PHP executable aur website ki absolute directory hosting ke mutabiq replace karein; hosting support exact paths bata sakta hai.
+Pehli baar isi command ko hosting Terminal mein run karein. Is se uploaded CSV ke 21 records aur server ki attendance_data.json mein jo extra records hain, dono Google Sheets mein merge honge.
+Har run 100 pending records tak bhejta hai. Failed sync agli scheduled run mein retry hota hai. Server JSON primary record rehta hai.
+Cron output/error ko hosting ki private log file ya cron notification mein monitor karein. Public web directory mein error logs na rakhein.
+
+7. VERIFY
+Google Sheet kholein: CSV ki 21 entries maujood hon; live data ki wajah se count zyada ho sakta hai.
+01/02/03 IDs ke leading zeroes verify karein.
+Cron dubara chala kar check karein ke same entries dobara add na hon.
+Form se ek clearly named test attendance mark karein. Website par foran aur Sheet par aglay cron run ke baad entry check karein.
+Website aur Sheet dono verify hone ke baad setup complete samjhein.
+
+BEHAVIOUR
+- Existing attendance flow, login, location, CSV export aur sound same rehte hain; owner table mein Delete button add hai.
+- Single Delete aur Clear all data owner login + confirmation ke baad website aur Google Sheet dono se records delete karte hain. Google unavailable ho to deletion pending rehti hai aur cron retry karta hai.
+- Old matching CSV/server rows repeat nahi hotin. Source mein exact duplicate rows hon to unki count preserve hoti hai. Nayi submissions ke separate sync IDs hote hain.
+- attendance_archive.php aur attendance_sync.lock auto-create honge. Archive delete na karein: isi mein pending/sent state hoti hai. Is ka backup bhi rakhein.
+- Sheet ki rows/hidden Sync ID column manually delete na karein: acknowledged records routine sync mein dobara nahi bheje jate.
+- Apps Script ko edit karne ke baad Deploy > Manage deployments > Edit > New version se update karein.
+- Google Sheet reporting/backup hai; website ab bhi apne JSON se data read karti hai. Sheet edits website ko update nahi karte.
+
+VALIDATION
+PHP 7.4 syntax checks passed. PHP WebAssembly execution tests passed for stable ID migration, duplicate siblings, deletion, crash recovery, historical import protection and clear-all. PHP request tests passed for owner authorization, invalid-ID rejection, deletion/pending status, repeat deletion and attendance marking. Apps Script mock tests passed for 21-row import, single/bulk deletion, failure retries and preventing re-import/late-request resurrection. Actual Google/cPanel end-to-end test deployment par required hai. Live server ko modify nahi kiya gaya.
+
+DOM interaction tests passed for Delete rendering, confirmation/cancel, request payload, dashboard refresh, pending message and text escaping. Browser screenshot verification unavailable in this environment.
+
+Latest sync update: nayi attendance save par immediate Sheets attempt, owner-only Sync now and diagnostics added. Tests passed for automatic attempt, durable save despite configuration failure, pending deletion, owner-only sync action/status and PHP 7.4 syntax. Live Google Sheets access remains unverified.

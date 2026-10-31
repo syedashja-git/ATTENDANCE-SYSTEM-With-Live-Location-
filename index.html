@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attendance Workspace</title>
+  <style>
+    :root {
+      --ink: #142a30;
+      --muted: #637579;
+      --accent: #cdfb73;
+      --line: #e3eae7;
+      --navy: #102c30
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: #f5f7f4;
+      color: var(--ink);
+      font-family: Inter, Arial, sans-serif;
+      font-size: 14px
+    }
+
+    button,
+    input {
+      font: inherit
+    }
+
+    button {
+      cursor: pointer;
+      transition: background .2s, transform .2s
+    }
+
+    button:hover {
+      transform: translateY(-1px)
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid #599f40;
+      outline-offset: 4px
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    header {
+      height: 90px;
+      max-width: 1280px;
+      margin: auto;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -.8px
+    }
+
+    .brandmark {
+      width: 36px;
+      height: 36px;
+      background: var(--navy);
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      font-size: 23px
+    }
+
+    .brand small {
+      font-size: 10px;
+      display: block;
+      letter-spacing: 2.1px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 3px
+    }
+
+    .header-right {
+      display: flex;
+      gap: 26px;
+      align-items: center
+    }
+
+    .header-label {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .text-btn {
+      background: none;
+      border: 0;
+      color: var(--ink);
+      font-weight: 600;
+      padding: 10px 0
+    }
+
+    .shell {
+      max-width: 1184px;
+      margin: 26px auto 0
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.08fr 1fr;
+      min-height: 645px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 24px 65px #12362a09
+    }
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column
+    }
+
+    .hero:after {
+      content: '';
+      position: absolute;
+      width: 430px;
+      height: 430px;
+      border: 1px solid #ffffff0b;
+      border-radius: 50%;
+      right: -200px;
+      bottom: -230px;
+      box-shadow: 0 0 0 60px #ffffff03, 0 0 0 120px #ffffff03;
+      pointer-events: none
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block
+    }
+
+    .hero h1 {
+      font-size: 57px;
+      line-height: 1.08;
+      letter-spacing: -3px;
+      font-weight: 500;
+      margin: 32px 0 20px
+    }
+
+    .hero h1 span {
+      color: var(--accent)
+    }
+
+    .hero-copy {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #b1c3c1;
+      max-width: 330px
+    }
+
+    .location-art {
+      height: 170px;
+      margin: 24px 0;
+      position: relative;
+      border: 1px solid #ffffff15;
+      border-radius: 18px;
+      background: linear-gradient(30deg, transparent 45%, #ffffff05 45%, #ffffff05 49%, transparent 49%), linear-gradient(145deg, transparent 44%, #ffffff05 44%, #ffffff05 48%, transparent 48%), #19363a;
+      display: grid;
+      place-items: center;
+      overflow: hidden
+    }
+
+    .orbit {
+      width: 110px;
+      height: 110px;
+      border: 1px solid #c6f97822;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 0 27px #cdfb7305, 0 0 0 55px #cdfb7303
+    }
+
+    .pin {
+      width: 54px;
+      height: 54px;
+      background: var(--accent);
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      color: var(--navy);
+      box-shadow: 0 12px 30px #0003
+    }
+
+    .map-label {
+      position: absolute;
+      left: 15px;
+      bottom: 12px;
+      color: #b7c9c5;
+      font-size: 10px;
+      letter-spacing: .5px
+    }
+
+    .hero-bottom {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-top: auto;
+      font-size: 12px;
+      color: #c5d4d0;
+      line-height: 1.6
+    }
+
+    .mini-icon {
+      border: 1px solid #ffffff24;
+      padding: 9px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center
+    }
+
+    .checkin {
+      padding: 43px 46px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 28px
+    }
+
+    .badge {
+      background: #eef6e5;
+      color: #466326;
+      padding: 7px 10px;
+      border-radius: 7px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .7px
+    }
+
+    .clock {
+      font-size: 34px;
+      letter-spacing: -1.4px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 500
+    }
+
+    .clock small {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0
+    }
+
+    .today {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 7px
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 25px 0
+    }
+
+    h2 {
+      font-size: 28px;
+      letter-spacing: -1px;
+      margin: 0 0 10px;
+      font-weight: 600
+    }
+
+    .subcopy {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 0 0 26px
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 9px
+    }
+
+    .field {
+      margin-bottom: 20px
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid #dce4df;
+      background: #fafbf9;
+      border-radius: 10px;
+      padding: 15px 16px;
+      color: var(--ink);
+      outline: none;
+      transition: border .2s, box-shadow .2s
+    }
+
+    input::placeholder {
+      color: #98a5a2
+    }
+
+    input:focus {
+      border-color: #739a40;
+      box-shadow: 0 0 0 3px #cdfb733b;
+      background: white
+    }
+
+    .primary {
+      width: 100%;
+      background: var(--accent);
+      color: #203318;
+      border: 1px solid #c2ed70;
+      border-radius: 10px;
+      padding: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 5px 12px #a8d85613
+    }
+
+    .primary:hover {
+      background: #bfee62
+    }
+
+    .location-note {
+      display: flex;
+      gap: 7px;
+      align-items: flex-start;
+      justify-content: center;
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin: 17px 0 0
+    }
+
+    .success {
+      margin-top: 15px;
+      padding: 12px;
+      border: 1px solid #c5e8b4;
+      border-radius: 10px;
+      background: #f1f9e9;
+      color: #3b6324;
+      font-size: 13px
+    }
+
+    .bottom-access {
+      margin-top: 27px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .bottom-access button {
+      font-size: 12px
+    }
+
+    footer {
+      max-width: 1184px;
+      margin: 22px auto 28px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #7c8c88
+    }
+
+    .footer-right {
+      display: flex;
+      gap: 20px
+    }
+
+    .login-wrap {
+      max-width: 440px;
+      margin: 65px auto;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 38px;
+      box-shadow: 0 20px 70px #15392a09
+    }
+
+    .login-icon {
+      background: #eff6e8;
+      width: 55px;
+      height: 55px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 25px
+    }
+
+    .back {
+      margin-top: 24px;
+      text-align: center
+    }
+
+    .error {
+      padding: 12px;
+      background: #fff2f0;
+      color: #a63a34;
+      border: 1px solid #f1ccc7;
+      border-radius: 9px;
+      margin-top: 16px;
+      line-height: 1.6
+    }
+
+    .dash {
+      max-width: 1184px;
+      margin: 28px auto 70px
+    }
+
+    .dash-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px
+    }
+
+    .section-kicker {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      margin-bottom: 12px
+    }
+
+    .secondary {
+      background: white;
+      border: 1px solid #dae3df;
+      border-radius: 9px;
+      padding: 11px 17px;
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 28px
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 17px;
+      padding: 25px;
+      position: relative
+    }
+
+    .stat:first-child {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy)
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .stat:first-child .stat-label {
+      color: #b1c6c2
+    }
+
+    .stat-value {
+      font-size: 38px;
+      letter-spacing: -1.5px;
+      margin: 19px 0 7px
+    }
+
+    .stat-note {
+      font-size: 11px;
+      color: #879994
+    }
+
+    .stat-icon {
+      position: absolute;
+      right: 25px;
+      top: 22px;
+      font-size: 20px;
+      color: #7c9d61
+    }
+
+    .history {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      overflow: hidden
+    }
+
+    .history-head {
+      padding: 25px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center
+    }
+
+    .history h3 {
+      font-size: 18px;
+      margin: 0 0 7px;
+      letter-spacing: -.4px
+    }
+
+    .history p {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .controls input {
+      width: 160px;
+      padding: 10px;
+      font-size: 12px
+    }
+
+    .controls button {
+      font-size: 12px
+    }
+
+    .export {
+      background: var(--accent);
+      border-color: #c2ed70
+    }
+
+    .danger {
+      color: #ac5146;
+      background: #fff7f5;
+      border-color: #eedbd6
+    }
+
+    .table-scroll {
+      overflow-x: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      white-space: nowrap
+    }
+
+    th {
+      text-align: left;
+      background: #f7f9f6;
+      color: #7b8a84;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 17px 25px;
+      border-block: 1px solid var(--line)
+    }
+
+    td {
+      padding: 20px 25px;
+      font-size: 12px;
+      border-bottom: 1px solid #edf1ee;
+      color: #596e66
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    tbody tr:hover {
+      background: #fbfdf8
+    }
+
+    td[colspan] {
+      text-align: center;
+      padding: 60px 20px;
+      color: #84938c;
+      font-weight: 400
+    }
+
+    .history-bottom {
+      padding: 17px 25px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between
+    }
+
+    .fade-in {
+      animation: appear .4s ease-out
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    svg {
+      flex-shrink: 0
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%)
+    }
+
+    @media(min-width:1450px) {
+      .shell {
+        margin-top: 50px
+      }
+    }
+
+    @media(max-width:1000px) {
+
+      .shell,
+      .dash,
+      footer {
+        margin-left: 24px;
+        margin-right: 24px
+      }
+
+      .hero {
+        padding: 35px
+      }
+
+      .hero h1 {
+        font-size: 48px
+      }
+
+      .checkin {
+        padding: 35px 30px
+      }
+
+      .history-head {
+        align-items: flex-start;
+        flex-direction: column
+      }
+    }
+
+    @media(max-width:700px) {
+      header {
+        height: 76px;
+        padding: 0 22px
+      }
+
+      .header-label {
+        display: none
+      }
+
+      .shell {
+        margin: 12px 16px
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+        border-radius: 20px
+      }
+
+      .hero {
+        padding: 30px
+      }
+
+      .hero h1 {
+        font-size: 39px;
+        margin: 22px 0 12px;
+        letter-spacing: -2px
+      }
+
+      .hero-copy {
+        font-size: 13px;
+        max-width: 100%;
+        margin: 0
+      }
+
+      .location-art,
+      .hero-bottom {
+        display: none
+      }
+
+      .checkin {
+        padding: 28px
+      }
+
+      .topline {
+        margin-bottom: 22px
+      }
+
+      .bottom-access {
+        margin-top: 22px
+      }
+
+      footer {
+        margin: 22px 20px;
+        line-height: 1.8;
+        gap: 20px
+      }
+
+      .footer-right {
+        display: none
+      }
+
+      .login-wrap {
+        margin: 25px 16px;
+        padding: 28px
+      }
+
+      .dash {
+        margin: 20px 16px
+      }
+
+      .stats {
+        gap: 10px;
+        grid-template-columns: 1fr
+      }
+
+      .stat {
+        padding: 20px
+      }
+
+      .stat-value {
+        margin: 12px 0 5px;
+        font-size: 30px
+      }
+
+      .dash-heading h2 {
+        font-size: 24px
+      }
+
+      .history-head {
+        padding: 20px
+      }
+
+      .controls {
+        gap: 8px
+      }
+
+      .controls .secondary {
+        padding: 10px
+      }
+
+      .history-bottom {
+        padding: 15px 20px;
+        gap: 15px
+      }
+
+      .clock {
+        font-size: 30px
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+
+    /* Responsive live clock presentation */
+    .workspace>* {
+      min-width: 0
+    }
+
+    .time-panel {
+      display: flex;
+      align-items: center;
+      gap: 21px
+    }
+
+    .analog {
+      width: 128px;
+      flex: 0 0 128px;
+      filter: drop-shadow(0 8px 10px #102c3014)
+    }
+
+    .analog svg {
+      width: 100%;
+      height: auto;
+      display: block
+    }
+
+    .digital {
+      min-width: 0
+    }
+
+    .time-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9px;
+      letter-spacing: 1.1px;
+      color: #637579;
+      font-weight: 600
+    }
+
+    .time-label .dot {
+      background: #79aa43;
+      width: 5px;
+      height: 5px
+    }
+
+    .clock {
+      font-size: 29px;
+      letter-spacing: -1px;
+      white-space: nowrap;
+      margin-top: 9px;
+      font-variant-numeric: tabular-nums
+    }
+
+    .clock small {
+      font-size: 11px;
+      margin-left: 6px;
+      letter-spacing: 0
+    }
+
+    .today {
+      font-size: 11px;
+      line-height: 1.6
+    }
+
+    .time-zone {
+      font-size: 9px;
+      color: #84948b;
+      margin-top: 6px;
+      line-height: 1.5
+    }
+
+    .checkin {
+      padding-inline: 32px
+    }
+
+    .dash,
+    .history,
+    .table-scroll {
+      min-width: 0
+    }
+
+    .table-scroll {
+      max-width: 100%
+    }
+
+    @media(min-width:701px) and (max-width:1050px) {
+      .time-panel {
+        gap: 12px
+      }
+
+      .analog {
+        width: 98px;
+        flex-basis: 98px
+      }
+
+      .clock {
+        font-size: 23px
+      }
+
+      .checkin {
+        padding-inline: 24px
+      }
+
+      .time-zone {
+        max-width: 160px
+      }
+    }
+
+    @media(max-width:700px) {
+      .time-panel {
+        gap: 18px
+      }
+
+      .analog {
+        width: 112px;
+        flex-basis: 112px
+      }
+
+      .checkin {
+        padding: 26px 24px
+      }
+
+      .clock {
+        font-size: 26px
+      }
+
+      .brand {
+        font-size: 18px
+      }
+
+      .brand small {
+        font-size: 8px;
+        letter-spacing: 1.5px
+      }
+
+      .header-right {
+        gap: 10px
+      }
+
+      .header-right .text-btn {
+        font-size: 12px
+      }
+
+      .dash-heading {
+        gap: 12px
+      }
+
+      .controls {
+        width: 100%
+      }
+
+      .history-bottom {
+        flex-wrap: wrap
+      }
+    }
+
+    @media(max-width:370px) {
+      header {
+        padding-inline: 16px
+      }
+
+      .brand {
+        gap: 8px
+      }
+
+      .brandmark {
+        width: 30px;
+        height: 32px
+      }
+
+      .time-panel {
+        gap: 12px
+      }
+
+      .analog {
+        width: 90px;
+        flex-basis: 90px
+      }
+
+      .clock {
+        font-size: 23px
+      }
+
+      .checkin {
+        padding: 24px 18px
+      }
+
+      .hero {
+        padding: 27px 22px
+      }
+
+      .hero h1 {
+        font-size: 36px
+      }
+
+      .today {
+        font-size: 10px
+      }
+
+      .time-zone {
+        font-size: 8px
+      }
+
+      .bottom-access {
+        gap: 10px
+      }
+
+      .topline {
+        font-size: 10px
+      }
+
+      .dash-heading {
+        flex-wrap: wrap
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand"><span class="brandmark" aria-hidden="true">◷</span>
+      <div>Attendance<small>TEAM WORKSPACE</small></div>
+    </div>
+    <div class="header-right"><span class="header-label">A better start to every workday.</span><button class="text-btn"
+        onclick="showOwnerLogin()">Owner access ↗</button></div>
+  </header>
+  <main>
+    <section id="employeeView" class="shell fade-in">
+      <div class="workspace">
+        <div class="hero">
+          <div class="eyebrow"><span class="dot"></span> YOUR WORKDAY, CONNECTED</div>
+          <h1>Great days<br>start with<br><span>being here.</span></h1>
+          <p class="hero-copy">A simple check-in. A connected team.<br>Attendance that keeps your workday moving.</p>
+          <div class="location-art" aria-hidden="true">
+            <div class="orbit">
+              <div class="pin"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.7">
+                  <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+                  <circle cx="12" cy="10" r="2.8" />
+                </svg></div>
+            </div><span class="map-label">LOCATION-ENABLED CHECK-IN</span>
+          </div>
+          <div class="hero-bottom"><span class="mini-icon">↗</span><span>Less time checking in.<br>More time doing your
+              best work.</span></div>
+        </div>
+        <div class="checkin">
+          <div class="topline"><span>EMPLOYEE WORKSPACE</span><span class="badge">CHECK-IN</span></div>
+          <div class="time-panel">
+            <div class="analog"><svg viewBox="0 0 200 200" role="img"
+                aria-label="Live analog clock showing Pakistan Standard Time">
+                <circle cx="100" cy="100" r="98" fill="#102c30" />
+                <circle cx="100" cy="100" r="92" fill="none" stroke="#ffffff12" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(0 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(6 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(12 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(18 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(24 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(30 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(36 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(42 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(48 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(54 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(60 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(66 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(72 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(78 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(84 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(90 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(96 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(102 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(108 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(114 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(120 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(126 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(132 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(138 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(144 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(150 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(156 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(162 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(168 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(174 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(180 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(186 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(192 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(198 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(204 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(210 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(216 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(222 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(228 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(234 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(240 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(246 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(252 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(258 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(264 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(270 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(276 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(282 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(288 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(294 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(300 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(306 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(312 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(318 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(324 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="14" x2="100" y2="23" transform="rotate(330 100 100)" stroke="#bdd88d"
+                  stroke-width="2" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(336 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(342 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(348 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <line x1="100" y1="18" x2="100" y2="21" transform="rotate(354 100 100)" stroke="#536b6b"
+                  stroke-width="1" />
+                <g fill="#d3e0d5" font-size="13" text-anchor="middle" font-family="Arial,sans-serif"><text x="100"
+                    y="41">12</text><text x="165" y="105">3</text><text x="100" y="170">6</text><text x="35"
+                    y="105">9</text></g><text x="100" y="140" fill="#8fa9a2" font-size="8" text-anchor="middle"
+                  letter-spacing="2">PKT</text>
+                <line id="hourHand" x1="100" y1="106" x2="100" y2="59" stroke="#f3f7ee" stroke-width="6"
+                  stroke-linecap="round" />
+                <line id="minuteHand" x1="100" y1="110" x2="100" y2="39" stroke="#f3f7ee" stroke-width="4"
+                  stroke-linecap="round" />
+                <line id="secondHand" x1="100" y1="116" x2="100" y2="31" stroke="#cdfb73" stroke-width="1.7"
+                  stroke-linecap="round" />
+                <circle cx="100" cy="100" r="5" fill="#cdfb73" />
+                <circle cx="100" cy="100" r="2" fill="#102c30" />
+              </svg></div>
+            <div class="digital">
+              <div class="time-label"><span class="dot"></span> LIVE TIME · PKT</div>
+              <div class="clock"><span id="liveTime">--:--:--</span><small id="livePeriod"></small></div>
+              <div id="liveDate" class="today">Pakistan Standard Time</div>
+              <div class="time-zone">Pakistan Standard Time · UTC+05:00</div>
+            </div>
+          </div>
+          <hr class="divider">
+          <h2>Welcome to your day.</h2>
+          <p class="subcopy">Enter your details below to mark your attendance.</p>
+          <form id="attendanceForm">
+            <div class="field"><label for="employeeName">Employee name</label><input type="text" id="employeeName"
+                placeholder="Enter your full name" autocomplete="name" required></div>
+            <div class="field"><label for="employeeId">Employee ID</label><input type="text" id="employeeId"
+                placeholder="Enter your employee ID" required></div><button type="submit" class="primary"><span>Mark
+                attendance</span><span aria-hidden="true">↗</span></button>
+          </form>
+          <p class="location-note"><span aria-hidden="true">⌖</span> Allow location access when prompted to include your
+            location.</p>
+          <div id="successTick" class="hidden success" role="status">✓ &nbsp; Attendance recorded. Have a great day!
+          </div><audio id="successSound" src="success.mp3" preload="none"></audio>
+          <div class="bottom-access"><span>Managing your team?</span><button class="text-btn"
+              onclick="showOwnerLogin()">Open owner dashboard →</button></div>
+        </div>
+      </div>
+    </section>
+    <section id="ownerLogin" class="hidden fade-in">
+      <div class="login-wrap">
+        <div class="login-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5">
+            <rect x="5" y="10" width="14" height="11" rx="3" />
+            <path d="M8 10V6a4 4 0 0 1 8 0v4M12 14v3" />
+          </svg></div>
+        <div class="section-kicker">OWNER WORKSPACE</div>
+        <h2>Your team. One view.</h2>
+        <p class="subcopy">Sign in to review attendance and manage your team's records.</p>
+        <form id="loginForm">
+          <div class="field"><label for="ownerPassword">Password</label><input type="password" id="ownerPassword"
+              placeholder="Enter your password" autocomplete="current-password" required></div><button class="primary"
+            type="submit"><span>Access dashboard</span><span>→</span></button>
+        </form>
+        <div id="loginError" class="hidden error" role="alert">Incorrect password. Please try again.</div>
+        <div class="back"><button class="text-btn" onclick="showEmployeeView()">← Back to employee check-in</button>
+        </div>
+      </div>
+    </section>
+    <section id="ownerDashboard" class="hidden dash fade-in">
+      <div class="dash-heading">
+        <div>
+          <div class="section-kicker">OWNER WORKSPACE / OVERVIEW</div>
+          <h2>Attendance overview</h2>
+          <p class="subcopy" style="margin:0">Your team's attendance, all in one place.</p>
+        </div><button class="secondary" onclick="logout()">Log out ↗</button>
+      </div>
+      <div class="stats">
+        <article class="stat">
+          <div class="stat-label">Total days</div><span class="stat-icon" aria-hidden="true">▦</span>
+          <div id="totalDays" class="stat-value">0</div>
+          <div class="stat-note">Days with recorded attendance</div>
+        </article>
+        <article class="stat">
+          <div class="stat-label">Total check-ins</div><span class="stat-icon" aria-hidden="true">↗</span>
+          <div id="totalCheckins" class="stat-value">0</div>
+          <div class="stat-note">Across all attendance records</div>
+        </article>
+        <article class="stat">
+          <div class="stat-label">Today's check-ins</div><span class="stat-icon" aria-hidden="true">✓</span>
+          <div id="todayCheckins" class="stat-value">0</div>
+          <div class="stat-note">Attendance recorded today</div>
+        </article>
+      </div>
+      <div class="history">
+        <div class="history-head">
+          <div>
+            <h3>Attendance history</h3>
+            <p>Review, filter and export your team's check-ins.</p>
+            <p id="sheetsSyncStatus" role="status" aria-live="polite">Google Sheets: checking...</p>
+          </div>
+          <div class="controls"><button type="button" id="syncNowButton" class="secondary" onclick="syncNow()">Sync now</button><label class="visually-hidden" for="dateFilter">Filter attendance by date</label><input
+              type="date" id="dateFilter" onchange="filterByDate()"><button class="secondary"
+              onclick="showAllRecords()">Show all</button><button class="secondary export" onclick="exportData()">↓
+              Export CSV</button><button class="secondary danger" onclick="clearAllData()">Clear all data</button></div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Employee name</th>
+                <th>Employee ID</th>
+                <th>Date</th>
+                <th>Time (PKT)</th>
+                <th>Location</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTable">
+              <tr>
+                <td colspan="6">No attendance records found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="history-bottom"><span>Attendance workspace</span><span>Employee check-in records</span></div>
+      </div>
+    </section>
+  </main>
+  <footer><span>Attendance workspace</span>
+    <div class="footer-right"><span>Simple check-ins.</span><span>Connected teams.</span></div>
+  </footer>
+  <!-- JS -->
+  <script>
+   // GitHub Pages demo — no PHP or Google Sheets requests.
+const API_URL = 'local-demo';
+const DEMO_OWNER_PASSWORD = 'demo123';
+const STORAGE_KEY =
+  'attendance-demo-v1:' + location.pathname.replace(/[^/]*$/, '');
+
+let ownerLoggedIn = false;
+
+function readRecords() {
+  const records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+  if (!Array.isArray(records)) {
+    throw new Error('Browser demo data is invalid.');
+  }
+
+  return records;
+}
+
+function saveRecords(records) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+async function postData(url = '', data = {}) {
+  const action = new URL(url, location.href).searchParams.get('action');
+
+  if (action === 'login') {
+    ownerLoggedIn = data.password === DEMO_OWNER_PASSWORD;
+
+    return {
+      success: ownerLoggedIn,
+      error: ownerLoggedIn ? null : 'Incorrect password'
+    };
+  }
+
+  if (action === 'logout') {
+    ownerLoggedIn = false;
+    return { success: true };
+  }
+
+  try {
+    if (action === 'mark') {
+      const records = readRecords();
+
+      records.push({
+        ...data,
+        _sync_id: crypto.randomUUID()
+      });
+
+      saveRecords(records);
+      return { success: true };
+    }
+
+    if (!ownerLoggedIn) {
+      return { success: false, error: 'Please log in first.' };
+    }
+
+    if (action === 'delete') {
+      const records = readRecords().filter(
+        record => record._sync_id !== data.sync_id
+      );
+
+      saveRecords(records);
+
+      return {
+        success: true,
+        message: 'Entry deleted from this browser only.'
+      };
+    }
+
+    if (action === 'clear') {
+      saveRecords([]);
+
+      return {
+        success: true,
+        message: 'All demo entries cleared from this browser.'
+      };
+    }
+
+    return {
+      success: false,
+      error: 'Google Sheets sync is disabled in this demo.'
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Could not save browser data: ' + error.message
+    };
+  }
+}
+
+async function getData(url = '') {
+  if (!ownerLoggedIn) {
+    return { success: false, error: 'Please log in first.' };
+  }
+
+  return {
+    success: true,
+    data: readRecords(),
+    sync: { disabled: true }
+  };
+}
+
+    async function getCurrentLocation() {
+      return new Promise((resolve) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            pos => {
+              const lat = pos.coords.latitude.toFixed(6);
+              const lng = pos.coords.longitude.toFixed(6);
+              resolve(`${lat}, ${lng}`);
+            },
+            () => resolve('Location not available')
+          );
+        } else {
+          resolve('Geolocation not supported');
+        }
+      });
+    }
+
+    function getPKTTime() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      return new Date(utc + (5 * 60 * 60000));
+    }
+
+    function formatPKTTime(date) {
+      return date.toLocaleString('en-US', {
+        timeZone: 'Asia/Karachi',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+    }
+
+    // Attendance form submit
+    document.getElementById('attendanceForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const name = document.getElementById('employeeName').value.trim();
+      const id = document.getElementById('employeeId').value.trim();
+      if (!name || !id) return alert('Please enter both Employee Name and ID');
+
+      const submitButton = this.querySelector('button[type="submit"]');
+      if (submitButton.disabled) return;
+      submitButton.disabled = true;
+      const pktTime = getPKTTime();
+      const location = await getCurrentLocation();
+
+      const attendance = {
+        name,
+        id,
+        date: pktTime.toISOString().split('T')[0],
+        time: formatPKTTime(pktTime),
+        location,
+        timestamp: pktTime.getTime()
+      };
+
+      try {
+        const res = await postData(`${API_URL}?action=mark`, attendance);
+
+        if (res.success) {
+          // try/catch play to avoid unhandled promise if browser blocks autoplay
+          const sound = document.getElementById('successSound');
+          if (sound) sound.play().catch(() => { });
+
+          const tick = document.getElementById('successTick');
+          tick.classList.remove('hidden');
+          this.reset();
+
+          setTimeout(() => {
+            tick.classList.add('hidden');
+          }, 3000);
+        } else {
+          alert('Error marking attendance: ' + (res.error || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Network error while marking attendance.');
+        console.error(err);
+      } finally { submitButton.disabled = false; }
+    });
+
+    // Login form
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const password = document.getElementById('ownerPassword').value;
+      if (!password) return alert('Please enter password');
+
+      try {
+        const res = await postData(`${API_URL}?action=login`, { password });
+        if (res.success) {
+          document.getElementById('ownerPassword').value = '';
+          document.getElementById('loginError').classList.add('hidden');
+          showOwnerDashboard();
+        } else {
+          document.getElementById('loginError').classList.remove('hidden');
+          setTimeout(() => {
+            document.getElementById('loginError').classList.add('hidden');
+          }, 3000);
+        }
+      } catch (err) {
+        alert('Network error during login.');
+        console.error(err);
+      }
+    });
+
+    function showEmployeeView() {
+      document.getElementById('employeeView').classList.remove('hidden');
+      document.getElementById('ownerLogin').classList.add('hidden');
+      document.getElementById('ownerDashboard').classList.add('hidden');
+    }
+
+    function showOwnerLogin() {
+      document.getElementById('employeeView').classList.add('hidden');
+      document.getElementById('ownerLogin').classList.remove('hidden');
+      document.getElementById('ownerDashboard').classList.add('hidden');
+    }
+
+    async function showOwnerDashboard() {
+      document.getElementById('employeeView').classList.add('hidden');
+      document.getElementById('ownerLogin').classList.add('hidden');
+      document.getElementById('ownerDashboard').classList.remove('hidden');
+      await updateDashboard();
+    }
+
+    async function logout() {
+      try {
+        await postData(`${API_URL}?action=logout`, {});
+      } catch { }
+      showEmployeeView();
+    }
+
+    let attendanceData = [];
+
+    async function updateDashboard() {
+      try {
+        const res = await getData(`${API_URL}?action=get`);
+        if (!res.success) {
+          alert('Failed to load attendance data.');
+          return;
+        }
+        attendanceData = res.data;
+        showSyncStatus(res.sync);
+
+        const today = new Date().toISOString().split('T')[0];
+        const uniqueDates = [...new Set(attendanceData.map(r => r.date))];
+        const todayRecords = attendanceData.filter(r => r.date === today);
+
+        document.getElementById('totalDays').textContent = uniqueDates.length;
+        document.getElementById('totalCheckins').textContent = attendanceData.length;
+        document.getElementById('todayCheckins').textContent = todayRecords.length;
+
+        displayAttendanceRecords(attendanceData);
+      } catch (err) {
+        alert('Network error loading attendance data.');
+        console.error(err);
+      }
+    }
+
+    function showSyncStatus(status) {
+      const target = document.getElementById('sheetsSyncStatus');
+      if (!status) { target.textContent = 'Google Sheets: update the PHP API to view sync status.'; return; }
+      const pending = `${status.pending_records} entries, ${status.pending_deletions} deletions pending`;
+      target.textContent = status.last_error ? `Google Sheets: ${status.last_error} (${pending})`
+        : status.pending_records || status.pending_deletions ? `Google Sheets: ${pending}. Click Sync now.`
+        : 'Google Sheets: all queued changes acknowledged.';
+    }
+
+    async function syncNow() {
+      const button = document.getElementById('syncNowButton');
+      if (button.disabled) return;
+      button.disabled = true; button.textContent = 'Syncing...';
+      try {
+        const result = await postData(`${API_URL}?action=sync`, {});
+        if (result.sync) showSyncStatus(result.sync);
+        if (!result.success) alert(result.error || 'Sync failed. Check the status message.');
+        await updateDashboard();
+      } catch (error) { alert('Could not complete sync. Check hosting connection and try again.'); }
+      finally { button.disabled = false; button.textContent = 'Sync now'; }
+    }
+
+    function escapeRecord(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+
+    function displayAttendanceRecords(records) {
+      const tbody = document.getElementById('attendanceTable');
+      if (!records || records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">No attendance records found</td></tr>`;
+        return;
+      }
+
+      const sorted = records.sort((a, b) => b.timestamp - a.timestamp);
+      tbody.innerHTML = sorted.map(r => `
+        <tr class="border-b border-blue-200 hover:bg-blue-100">
+          <td class="px-4 py-3 font-medium text-gray-900">${escapeRecord(r.name)}</td>
+          <td class="px-4 py-3 text-gray-700">${escapeRecord(r.id)}</td>
+          <td class="px-4 py-3 text-gray-700">${escapeRecord(r.date)}</td>
+          <td class="px-4 py-3 text-gray-700">${escapeRecord(r.time)}</td>
+          <td class="px-4 py-3 text-sm text-gray-600">${escapeRecord(r.location)}</td>
+          <td class="px-4 py-3"><button type="button" class="secondary danger" data-delete-id="${escapeRecord(r._sync_id)}">Delete</button></td>
+        </tr>`).join('');
+    }
+
+    document.getElementById('attendanceTable').addEventListener('click', async event => {
+      const button = event.target.closest('button[data-delete-id]');
+      if (!button || button.disabled) return;
+      const record = attendanceData.find(r => r._sync_id === button.dataset.deleteId);
+      if (!record) return;
+      if (!confirm(`Delete attendance for ${record.name} (${record.id}) on ${record.date}, ${record.time} from the website AND Google Sheets?`)) return;
+      button.disabled = true;
+      button.textContent = 'Deleting...';
+      try {
+        const res = await postData(`${API_URL}?action=delete`, {sync_id: record._sync_id});
+        if (!res.success) throw new Error(res.error || 'Delete failed');
+        await updateDashboard();
+        if (document.getElementById('dateFilter').value) filterByDate();
+        alert(res.message);
+      } catch (error) {
+        alert(error.message || 'Network error. Refresh and check the record before retrying.');
+      } finally { button.disabled = false; button.textContent = 'Delete'; }
+    });
+
+    function filterByDate() {
+      const selectedDate = document.getElementById('dateFilter').value;
+      if (!selectedDate) {
+        alert('Please select a date to filter');
+        return;
+      }
+      const filtered = attendanceData.filter(r => r.date.trim() === selectedDate.trim());
+      displayAttendanceRecords(filtered);
+    }
+
+    function showAllRecords() {
+      document.getElementById('dateFilter').value = '';
+      displayAttendanceRecords(attendanceData);
+    }
+
+    function exportData() {
+      if (attendanceData.length === 0) {
+        alert('No data to export');
+        return;
+      }
+      const headers = ['Employee Name', 'Employee ID', 'Date', 'Time (PKT)', 'Location'];
+      const csv = [headers.join(','), ...attendanceData.map(r => [`"${r.name}"`, `"${r.id}"`, `"${r.date}"`, `"${r.time}"`, `"${r.location}"`].join(','))].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ALPHA_Attendance_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    async function clearAllData() {
+      if (!confirm('Delete ALL attendance records from the website AND Google Sheets? This cannot be undone.')) return;
+      try {
+        const res = await postData(`${API_URL}?action=clear`, {});
+        if (res.success) {
+          alert(res.message);
+          updateDashboard();
+        } else {
+          alert('Failed to clear data: ' + (res.error || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Network error while clearing data.');
+        console.error(err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { showEmployeeView(); });
+  </script>
+  <script>
+    // Presentation-only clocks; both derive from the same real device time.
+    const digitalTimeFormat = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Karachi', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    const clockDateFormat = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Karachi', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let lastClockSecond = -1;
+    function refreshClock() {
+      const now = new Date();
+      const secondStamp = Math.floor(now.getTime() / 1000);
+      if (secondStamp !== lastClockSecond) {
+        const parts = digitalTimeFormat.formatToParts(now);
+        document.getElementById('liveTime').textContent = parts.filter(p => ['hour', 'minute', 'second', 'literal'].includes(p.type)).map(p => p.value).join('').trim();
+        document.getElementById('livePeriod').textContent = parts.find(p => p.type === 'dayPeriod').value;
+        document.getElementById('liveDate').textContent = clockDateFormat.format(now);
+        lastClockSecond = secondStamp;
+      }
+      const pkt = new Date(now.getTime() + 5 * 60 * 60 * 1000);
+      const seconds = pkt.getUTCSeconds() + (reducedMotion.matches ? 0 : pkt.getUTCMilliseconds() / 1000);
+      const minutes = pkt.getUTCMinutes() + seconds / 60;
+      const hours = pkt.getUTCHours() % 12 + minutes / 60;
+      document.getElementById('hourHand').setAttribute('transform', `rotate(${hours * 30} 100 100)`);
+      document.getElementById('minuteHand').setAttribute('transform', `rotate(${minutes * 6} 100 100)`);
+      document.getElementById('secondHand').setAttribute('transform', `rotate(${seconds * 6} 100 100)`);
+      requestAnimationFrame(refreshClock);
+    }
+    refreshClock();
+  </script>
+</body>
+
+</html>
